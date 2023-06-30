@@ -1,0 +1,88 @@
+﻿@page
+@model MovieDatabase.Pages.Movies.IndexModel
+
+@{
+    ViewData["Title"] = "Movies";
+}
+
+<h1>My Movie Journal</h1>
+
+<p>
+    <a asp-page="Create">Add New Movie</a>
+</p>
+
+@*Add search options by Genre
+*@
+<form>
+    <p>
+        <select asp-for="MovieGenre" asp-items="Model.Genres">
+            <option value="">All</option>
+        </select>
+        Title: <input type="text" asp-for="SearchString"/>
+        <input type="submit" value="Filter"/>
+        <a asp-page="Index">Back to Full List</a>
+    </p>
+    <p>
+        <a asp-page="Index" asp-route-sortOrder="name_asc">Sort by Title</a> |
+        <a asp-page="Index" asp-route-sortOrder="releaseYear">Sort by Release</a> |
+        <a asp-page="Index" asp-route-sortOrder="releaseYear_desc">Sort by Release Descending</a>
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].EntryDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].MovieName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].ReleaseYear)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].JournalEntry)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Movie) 
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EntryDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReleaseYear)
+            </td>
+@*            Check if the journal entry is more than 100 characters, and if it is, create a link to the details page that says "Continue Reading"
+*@            <td>
+                @if (item.JournalEntry.Length > 100)
+                {
+                    @:@item.JournalEntry.Substring(0, 100)
+                    <a asp-page="./Details" asp-route-id="@item.Id">...Continue Reading</a>
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.JournalEntry)
+                }
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
